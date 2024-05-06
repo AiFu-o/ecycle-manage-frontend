@@ -4,44 +4,13 @@
         <a-layout-sider v-model:collapsed="collapsed" collapsible>
             <div class="logo" />
             <a-menu
+                v-model:openKeys="openKeys"
                 v-model:selectedKeys="selectedKeys"
                 theme="dark"
                 mode="inline"
-            >
-                <a-menu-item key="1">
-                    <pie-chart-outlined />
-                    <span>Option 1</span>
-                </a-menu-item>
-                <a-menu-item key="2">
-                    <desktop-outlined />
-                    <span>Option 2</span>
-                </a-menu-item>
-                <a-sub-menu key="sub1">
-                    <template #title>
-                        <span>
-                            <user-outlined />
-                            <span>User</span>
-                        </span>
-                    </template>
-                    <a-menu-item key="3">Tom</a-menu-item>
-                    <a-menu-item key="4">Bill</a-menu-item>
-                    <a-menu-item key="5">Alex</a-menu-item>
-                </a-sub-menu>
-                <a-sub-menu key="sub2">
-                    <template #title>
-                        <span>
-                            <team-outlined />
-                            <span>Team</span>
-                        </span>
-                    </template>
-                    <a-menu-item key="6">Team 1</a-menu-item>
-                    <a-menu-item key="8">Team 2</a-menu-item>
-                </a-sub-menu>
-                <a-menu-item key="9">
-                    <file-outlined />
-                    <span>File</span>
-                </a-menu-item>
-            </a-menu>
+                :items="breadcrumbItems"
+                @click="menuClick"
+            />
         </a-layout-sider>
         <a-layout>
             <a-layout-header style="background: #fff; padding: 0" />
@@ -67,16 +36,66 @@
     </a-layout>
 </template>
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { RouterLink, RouterView, useRouter } from "vue-router";
-const router = useRouter();
+import { type } from "os";
+import { onMounted, ref, Ref } from "vue";
+import { RouterLink, RouterView, useRouter, RouteRecord } from "vue-router";
 
-const breadcrumbItems = [];
+const selectedKeys = ref([]);
+const openKeys = ref([]);
+var breadcrumbItems = ref([]);
 const collapsed = false;
+
+const router = useRouter();
 onMounted(() => {
-    let routerList = 
-    console.log(router.getRoutes());
+    buildMenuItems();
 });
+
+const buildMenuItems = () => {
+    const routeRecords: RouteRecord[] = router.getRoutes();
+    let breadcrumbItemsMap = new Map();
+    routeRecords.forEach((routeRecord) => {
+        if (
+            routeRecord.meta &&
+            (routeRecord.meta.group || routeRecord.meta.group == false)
+        ) {
+            let breadcrumbItemList = [];
+            const recordMeta: object = routeRecord.meta;
+            let group: string;
+            group = recordMeta["group"];
+
+            if (breadcrumbItemsMap.has(group)) {
+                breadcrumbItemList = breadcrumbItemsMap.get(group);
+            } else {
+                breadcrumbItemList = [];
+            }
+            breadcrumbItemList.push({
+                key: routeRecord.name,
+                title: routeRecord.meta.title,
+                label: routeRecord.meta.title,
+            });
+            breadcrumbItemsMap.set(group, breadcrumbItemList);
+        }
+    });
+    let newBreadcrumbItems = [];
+    for (const itemGroup of breadcrumbItemsMap.keys()) {
+        const breadcrumbItemList = breadcrumbItemsMap.get(itemGroup);
+        if (itemGroup) {
+            newBreadcrumbItems.push({
+                key: itemGroup,
+                title: itemGroup,
+                label: itemGroup,
+                children: breadcrumbItemList,
+            });
+        } else {
+            newBreadcrumbItems.push(breadcrumbItemList[0]);
+        }
+    }
+    breadcrumbItems.value = newBreadcrumbItems;
+};
+
+const menuClick = ({ item, key, keyPath }) => {
+    router.push(key);
+};
 </script>
 
 <style scoped>
