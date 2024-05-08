@@ -8,7 +8,7 @@
                 v-model:selectedKeys="selectedKeys"
                 theme="dark"
                 mode="inline"
-                :items="breadcrumbItems"
+                :items="menuItems"
                 @click="menuClick"
             />
         </a-layout-sider>
@@ -42,7 +42,7 @@ import { RouterLink, RouterView, useRouter, RouteRecord } from "vue-router";
 
 const selectedKeys = ref([]);
 const openKeys = ref([]);
-var breadcrumbItems = ref([]);
+var menuItems = ref([]);
 const collapsed = false;
 
 const router = useRouter();
@@ -52,52 +52,51 @@ onMounted(() => {
 
 const buildMenuItems = () => {
     const routeRecords: RouteRecord[] = router.getRoutes();
-    let breadcrumbItemsMap = new Map();
+    let menuItemsMap = new Map();
     routeRecords.forEach((routeRecord) => {
         if (
             routeRecord.meta &&
             (routeRecord.meta.group || routeRecord.meta.group == false)
         ) {
-            let breadcrumbItemList = [];
+            let menuItemList = [];
             const recordMeta: object = routeRecord.meta;
             let group: string;
             group = recordMeta["group"];
 
-            if (breadcrumbItemsMap.has(group)) {
-                breadcrumbItemList = breadcrumbItemsMap.get(group);
+            if (menuItemsMap.has(group)) {
+                menuItemList = menuItemsMap.get(group);
             } else {
-                breadcrumbItemList = [];
+                menuItemList = [];
             }
-            breadcrumbItemList.push({
+            menuItemList.push({
                 key: routeRecord.name,
                 title: routeRecord.meta.title,
                 label: routeRecord.meta.title,
             });
-            breadcrumbItemsMap.set(group, breadcrumbItemList);
+            menuItemsMap.set(group, menuItemList);
         }
     });
-    let newBreadcrumbItems = [];
-    for (const itemGroup of breadcrumbItemsMap.keys()) {
-        const breadcrumbItemList = breadcrumbItemsMap.get(itemGroup);
+    let newMenuItems = [];
+    for (const itemGroup of menuItemsMap.keys()) {
+        const menuItemList = menuItemsMap.get(itemGroup);
         if (itemGroup) {
-            newBreadcrumbItems.push({
+            newMenuItems.push({
                 key: itemGroup,
                 title: itemGroup,
                 label: itemGroup,
-                children: breadcrumbItemList,
+                children: menuItemList,
             });
         } else {
-            newBreadcrumbItems.push(breadcrumbItemList[0]);
+            newMenuItems.push(menuItemList[0]);
         }
     }
-    breadcrumbItems.value = newBreadcrumbItems;
+    menuItems.value = newMenuItems;
 };
 
 const menuClick = ({ item, key, keyPath }) => {
-    router.push(key);
+    router.push({ name: key });
 };
 </script>
 
 <style scoped>
-
 </style>
