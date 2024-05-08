@@ -12,6 +12,15 @@ import {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9000', // 代理目标地址
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''), // 可选的重写路径
+      },
+    }
+  },
   plugins: [
     Components({
       resolvers: [
@@ -27,6 +36,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      }
     }
   }
 })
