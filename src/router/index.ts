@@ -45,6 +45,13 @@ const router = createRouter({
             title: "商品分类新建",
           },
           component: () => import('../views/commodity-category/edit.vue'),
+        }, {
+          path: '/commodity-category/edit/:id',
+          name: 'commodity-categor-edit',
+          meta: {
+            title: "商品分类编辑",
+          },
+          component: () => import('../views/commodity-category/edit.vue'),
         }]
     },
     {

@@ -1,7 +1,12 @@
 <template>
     <div>
-        <icon-select></icon-select>
         <div>
+            <a-button
+                type="primary"
+                style="float: right; margin-bottom: 20px"
+                @click="create"
+                >新建</a-button
+            >
             <a-table
                 :pagination="{
                     current: pageIndex,
@@ -13,6 +18,19 @@
                 :dataSource="data"
                 :columns="columns"
             >
+                <template #bodyCell="{ column, record }">
+                    <template v-if="column.key === 'iconFileId'">
+                        <img
+                            style="width: 20px; height: 20px"
+                            :src="getFileUrl(record.iconFileId)"
+                        />
+                    </template>
+                    <template v-else-if="column.key === 'action'">
+                        <a-button type="text" @click="edit(record.id)"
+                            >编辑</a-button
+                        >
+                    </template>
+                </template>
             </a-table>
         </div>
     </div>
@@ -38,10 +56,7 @@ const columns = [
         dataIndex: "title",
         ellipsis: true,
     },
-    {
-        title: "图标",
-        dataIndex: "icon",
-    },
+
     {
         title: "服务费类型",
         dataIndex: "serviceChargeType",
@@ -50,11 +65,26 @@ const columns = [
         title: "服务费",
         dataIndex: "serviceChargeSetting",
     },
+    {
+        title: "图标",
+        key: "iconFileId",
+        width: 80,
+    },
+    {
+        title: "操作",
+        key: "action",
+        align: "center",
+    },
 ];
 
 onMounted(() => {
     onLoad();
 });
+
+const getFileUrl = (fileId: string) => {
+    return `/api/storage-api/file/preview/${fileId}`;
+};
+
 const pageChange = (current: number, size: number) => {
     if (pageSize.value != size) {
         pageSize.value = size;
@@ -84,5 +114,13 @@ const onLoad = () => {
             data.value = result.dataList;
         }
     });
+};
+
+const edit = (id) => {
+    that.$router.push(`/commodity-category/edit/${id}`);
+};
+
+const create = () => {
+    that.$router.push(`/commodity-category/create`);
 };
 </script>
