@@ -30,13 +30,21 @@ const router = createRouter({
           component: () => import('../views/commodity/index.vue'),
         },
         {
-          path: '/commodity-type',
-          name: 'commodity-type',
+          path: '/commodity-category',
+          name: 'commodity-category',
           meta: {
             title: "商品分类",
             group: "商品"
           },
-          component: () => import('../views/commodity/index.vue'),
+          component: () => import('../views/commodity-category/index.vue'),
+        },
+        {
+          path: '/commodity-category/create',
+          name: 'commodity-categor-create',
+          meta: {
+            title: "商品分类新建",
+          },
+          component: () => import('../views/commodity-category/edit.vue'),
         }]
     },
     {
