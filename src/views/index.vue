@@ -13,46 +13,65 @@
             />
         </a-layout-sider>
         <a-layout>
-            <a-layout-header style="background: #fff; padding: 0" />
+            <a-layout-header style="background: #fff; padding-left: 20px">
+                {{ title }}
+            </a-layout-header>
             <a-layout-content style="margin: 0 16px">
                 <a-breadcrumb style="margin: 16px 0">
-                    <a-breadcrumb-item>User</a-breadcrumb-item>
-                    <a-breadcrumb-item>Bill</a-breadcrumb-item>
+                    <!-- <a-breadcrumb-item>User</a-breadcrumb-item>
+                    <a-breadcrumb-item>Bill</a-breadcrumb-item> -->
                 </a-breadcrumb>
                 <div
                     :style="{
                         padding: '24px',
                         background: '#fff',
-                        minHeight: '360px',
+                        height: 'calc(100% - 48px)',
                     }"
                 >
                     <router-view />
                 </div>
             </a-layout-content>
             <a-layout-footer style="text-align: center">
-                Ant Design ©2018 Created by Ant UED
+                <a href="https://beian.miit.gov.cn">京ICP备2024066385号</a>
             </a-layout-footer>
         </a-layout>
     </a-layout>
 </template>
 <script setup lang="ts">
 import { type } from "os";
-import { onMounted, ref, Ref } from "vue";
-import { RouterLink, RouterView, useRouter, RouteRecord } from "vue-router";
+import { onMounted, ref, Ref, getCurrentInstance, watch } from "vue";
+import {
+    RouterLink,
+    RouterView,
+    useRouter,
+    RouteRecord,
+    useRoute,
+} from "vue-router";
 
 const selectedKeys = ref([]);
 const openKeys = ref([]);
 var menuItems = ref([]);
 const collapsed = false;
-
+const title = ref("");
 const router = useRouter();
+const route = useRoute();
+
+watch(
+    () => route.meta, // 你可以监听 route 的 path、params 或 query
+    (val) => {
+        title.value = val.title.toString();
+    }
+);
+
 onMounted(() => {
+    title.value = route.meta.title.toString();
     buildMenuItems();
 });
 
 const buildMenuItems = () => {
     const routeRecords: RouteRecord[] = router.getRoutes();
     let menuItemsMap = new Map();
+
     routeRecords.forEach((routeRecord) => {
         if (
             routeRecord.meta &&

@@ -52,7 +52,25 @@ const router = createRouter({
             title: "商品分类编辑",
           },
           component: () => import('../views/commodity-category/edit.vue'),
-        }]
+        },
+        {
+          path: '/provider-apply',
+          name: 'provider-apply',
+          meta: {
+            title: "回收商申请单",
+            group: "用户"
+          },
+          component: () => import('../views/provider-apply/index.vue'),
+        },
+        {
+          path: '/provider-apply/detail/:id',
+          name: 'provider-apply-detail',
+          meta: {
+            title: "回收商申请单详情",
+          },
+          component: () => import('../views/provider-apply/detail.vue'),
+        }
+      ]
     },
     {
       path: '/login',
