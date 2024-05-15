@@ -1,9 +1,8 @@
 
 import axios, { AxiosError } from 'axios';
-import { useRouter } from 'vue-router';
+import router from "../router/index";
 import cookieUtils from "./cookie/cookie";
 
-const router = useRouter();
 // 创建一个 Axios 实例
 const instance = axios.create({
     baseURL: '/api',
@@ -29,6 +28,9 @@ instance.interceptors.response.use(
         return response;
     },
     (error: AxiosError) => {
+        if(router.currentRoute.value.name == 'login'){
+            return Promise.reject(error);
+        }
         if (error.response?.status === 401) {
             // 401 错误，跳转登录页
             router.push('/login');

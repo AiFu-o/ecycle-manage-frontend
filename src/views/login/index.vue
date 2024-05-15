@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, getCurrentInstance } from "vue";
+import { reactive, getCurrentInstance, onMounted } from "vue";
 
 const that = getCurrentInstance().appContext.config.globalProperties;
 
@@ -73,6 +73,19 @@ const formData = reactive<FormData>({
     password: "",
 });
 
+onMounted(() => {
+    hasLogin();
+});
+
+const hasLogin = () => {
+    that.$API({
+        method: "GET",
+        url: "/auth-api/auth/hasAuth",
+    }).then(()=>{
+        that.$router.back();
+    })
+};
+
 const doLogin = () => {
     that.$API({
         method: "POST",
@@ -81,7 +94,9 @@ const doLogin = () => {
             "content-type": "application/x-www-form-urlencoded",
         },
         data: formData,
-    });
+    }).then(()=>{
+        that.$router.push("/");
+    })
 };
 </script>
 <style lang="less">
