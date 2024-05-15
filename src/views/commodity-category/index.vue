@@ -19,7 +19,10 @@
                 :columns="columns"
             >
                 <template #bodyCell="{ column, record }">
-                    <template v-if="column.key === 'iconFileId'">
+                    <template v-if="column.key === 'serviceChargeType'">
+                        {{serviceChargeTypeData[record.serviceChargeType]}}
+                    </template>
+                    <template v-else-if="column.key === 'iconFileId'">
                         <img
                             style="width: 20px; height: 20px"
                             :src="getFileUrl(record.iconFileId)"
@@ -40,6 +43,11 @@
 import { onMounted, getCurrentInstance, ref } from "vue";
 
 const that = getCurrentInstance().appContext.config.globalProperties;
+
+const serviceChargeTypeData = {
+    RATIO_PAYMENT: "按比例支付",
+    FIXED_PAYMENT: "定额支付",
+};
 const pageSizeOptions = ref<string[]>(["10", "20"]);
 const pageIndex = ref(1);
 const pageSize = ref(10);
@@ -59,7 +67,7 @@ const columns = [
 
     {
         title: "服务费类型",
-        dataIndex: "serviceChargeType",
+        key: "serviceChargeType",
     },
     {
         title: "服务费",
