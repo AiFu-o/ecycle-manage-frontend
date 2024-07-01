@@ -15,7 +15,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:9000', // 代理目标地址
+        target: 'https://www.xiaoxunkj.com/api', // 代理目标地址
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''), // 可选的重写路径
       },
