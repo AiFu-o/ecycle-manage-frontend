@@ -43,23 +43,6 @@
                 </a-image-preview-group>
             </a-form-item>
 
-            <a-form-item label="手持身份证">
-                <a-image-preview-group
-                    v-for="item in handIdCardFiles"
-                    :key="item.id"
-                >
-                    <a-image
-                        style="
-                            border: 1px solid rgba(5, 5, 5, 0.06);
-                            padding: 5px;
-                            margin-right: 20px;
-                        "
-                        :width="200"
-                        :src="item"
-                    />
-                </a-image-preview-group>
-            </a-form-item>
-
             <a-form-item label="审批意见" name="approvalMessage">
                 <a-textarea
                     :rows="4"
@@ -150,7 +133,6 @@ const statusData = {
 
 const dataId = ref<string>("");
 
-const handIdCardFiles = ref([]);
 const idCardFiles = ref([]);
 
 onMounted(() => {
@@ -174,20 +156,6 @@ const loadIdcardFiles = (belongId) => {
         });
 };
 
-const loadHandIdCardFiles = (belongId) => {
-    that.$API({
-        method: "GET",
-        url: `/storage-api/fileInfos/handIdcard?belongId=${belongId}`,
-    })
-        .then((res) => {
-            let data = res.data.result;
-            handIdCardFiles.value = data;
-        })
-        .catch((error) => {
-            message.error("获取身份证失败");
-        });
-};
-
 const onLoad = () => {
     loading.value = true;
     that.$API({
@@ -197,7 +165,6 @@ const onLoad = () => {
         .then((res) => {
             let data = res.data.result;
             loadIdcardFiles(data.belongId);
-            loadHandIdCardFiles(data.belongId);
             data.status = statusData[data.status];
             Object.assign(applyData, data);
             loading.value = false;
