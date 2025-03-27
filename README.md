@@ -16,6 +16,12 @@
 ## 项目简介
 **有价**，后端基于 SpringMvc 构建，小程序基于 uniapp 构建，个人可以直接使用，如要商用请联系微信 w569111843。
 
+## 项目启动教程
+* 执行 ***npm install*** 拉取依赖
+* 修改 ***vite.config.ts*** 中的, server.proxy中的地址为后端地址
+* 执行 ***npm run dev*** 启动项目
+
+
 ### gitee仓库地址
 * 管理端前端：https://gitee.com/wang-weichen/ecycle-manage-frontend
 * 小程序端：https://gitee.com/JoKing_93/ecycle-frontend
